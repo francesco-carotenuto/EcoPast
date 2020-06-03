@@ -32,4 +32,5 @@ chronosphere and rangeBuilder, available on CRAN, can be installed by means of t
 EcoPast uses dependencies with ACM license, we address users to the authors of packages rangeBuilder, alphahull, and tripack for commercial use.
 
 DOI for citing the code:
-https://zenodo.org/badge/253762735.svg
+https://zenodo.org/badge/latestdoi/253762735
+
