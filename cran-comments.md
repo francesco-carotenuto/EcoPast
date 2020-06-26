@@ -1,5 +1,5 @@
 ## Test environments
-* Windows NT Win10, R 3.6.3
+* Windows NT Win10, R 4.0.2
 
 ## R CMD check results
 Status: OK
