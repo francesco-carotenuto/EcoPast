@@ -14,7 +14,8 @@
 #' @importFrom tcltk tkProgressBar setTkProgressBar
 #' @return A matrix including the shifted points
 #' @author Mirko Di Febbraro
-#' @examples \donttest{
+#' @examples
+#' \donttest{
 #' library(raster)
 #'raster(system.file("exdata/prediction_ground.gri", package="EcoPast"))->prediction_ground
 #'data(lgm)

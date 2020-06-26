@@ -67,7 +67,7 @@
 #' @return A list of three objects to be used with \code{minosse.target} function. The first element of the list is the dataset of target species occurrences. The second object is the raster stack of predictor species. The third object, if present, is the result of the cooccurrence analysis.
 #' @author Francesco Carotenuto, francesco.carotenuto@unina.it
 #' @examples
-#'   \donttest{
+#'   \dontrun{
 #' library(raster)
 #' data(lgm)
 #' raster(system.file("exdata/prediction_ground.gri", package="EcoPast"))->prediction_ground

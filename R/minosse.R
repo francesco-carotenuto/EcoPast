@@ -32,7 +32,7 @@
 #' If \code{minosse} function is performed for multiple species all at once, then \code{minosse} output described above is replicated for each target species.
 #' @author Francesco Carotenuto, francesco.carotenuto@unina.it
 #' @examples
-#'   \donttest{
+#'   \dontrun{
 #'   library(raster)
 #'   data(lgm)
 #'   raster(system.file("exdata/prediction_ground.gri", package="EcoPast"))->prediction_ground
@@ -67,11 +67,6 @@ minosse<-function(dat,
                   lon_0=NULL,
                   lat_0=NULL,
                   seed=NULL){
-
-  if (!requireNamespace("SDMTools", quietly = TRUE)) {
-    stop("Package \"SDMTools\" needed for this function to work. Please install it.",
-         call. = FALSE)
-  }
 
   if(is.null(species.name)) unique(as.character(dat$spec))->spec_list else strsplit(species.name," ")->spec_list
   if(is.null(projection)) stop("MInOSSE requires equal area-projected coordinates reference system to properly perform spatial analyses")

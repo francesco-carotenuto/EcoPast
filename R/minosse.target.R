@@ -29,7 +29,7 @@
 #' The two last elements show the target species name and the occurence record.
 #' @author Francesco Carotenuto, francesco.carotenuto@unina.it
 #' @examples
-#'   \donttest{
+#'   \dontrun{
 #'   library(raster)
 #'   data(lgm)
 #'   raster(system.file("exdata/prediction_ground.gri", package="EcoPast"))->prediction_ground
@@ -58,19 +58,15 @@ minosse.target<-function(resp,
                          n.sims.clusters=NULL,
                          seed=NULL){
 
-  if (!requireNamespace("SDMTools", quietly = TRUE)) {
-    stop("Package \"SDMTools\" needed for this function to work. Please install it.",
-         call. = FALSE)
-  }
 
-   # library(GSIF)
-   # library(raster)
-   # library(dismo)
-   # library(parallel)
-   # library(doSNOW)
-   # library(doParallel)
-   # library(foreach)
-   # library(PresenceAbsence)
+  #  library(GSIF)
+  #  library(raster)
+  #  library(dismo)
+  #  library(parallel)
+  #  library(doSNOW)
+  #  library(doParallel)
+  #  library(foreach)
+  #  library(PresenceAbsence)
 
 
   length(getLoadedDLLs())
@@ -210,7 +206,7 @@ minosse.target<-function(resp,
     if(n.folds==1) {
 
        MINOSSE_list<- foreach::foreach(i=1:n.sims,.export =c("i","lapply","minosse_fit.gstatModel","minosse_fit.regModel","minosse.core","n.sims","n.folds","dataset", "mappa_ras","projection.ground","seed","predict_by","configs"),
-                                       .packages = c("plotKML","gstat","SDMTools","automap","PresenceAbsence","snow", "doSNOW","GSIF","raster","dismo","sp","caret","xgboost"),.verbose=FALSE) %dopar% {
+                                       .packages = c("plotKML","gstat","automap","PresenceAbsence","snow", "doSNOW","GSIF","raster","dismo","sp","caret","xgboost"),.verbose=FALSE) %dopar% {
 
 
         if(class(try(MINOSSE_list<-minosse.core(dtset=dataset[[i]],
@@ -227,7 +223,7 @@ minosse.target<-function(resp,
 
     if(n.folds>1) {
        MINOSSE_list<- foreach::foreach(i=1:n.sims,.export =c("i","z","lapply","minosse_fit.gstatModel","minosse_fit.regModel","minosse.core","n.sims","n.folds","dataset", "mappa_ras","projection.ground","seed","predict_by","configs"),
-                                       .packages = c("plotKML","gstat","SDMTools","automap","PresenceAbsence","snow", "doSNOW","GSIF","raster","dismo","sp","caret","xgboost"),.verbose=FALSE) %dopar% {
+                                       .packages = c("plotKML","gstat","automap","PresenceAbsence","snow", "doSNOW","GSIF","raster","dismo","sp","caret","xgboost"),.verbose=FALSE) %dopar% {
 
                                       MINOSSE_list<-list()
                                       for(z in 1:length(dataset[[i]])) {

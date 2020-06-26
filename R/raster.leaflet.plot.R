@@ -17,7 +17,8 @@
 #' @importFrom grDevices terrain.colors
 #' @return A data.frame with the reduced points.
 #' @author Mirko Di Febbraro
-#' @examples \donttest{
+#' @examples
+#' \donttest{
 #'   library(raster)
 #'   data(lgm)
 #'   raster(system.file("exdata/prediction_ground.gri",

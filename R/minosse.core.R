@@ -11,7 +11,6 @@ minosse.core<-Vectorize(function(dtset,
                                  configs) {
 
   # library(GSIF)
-  # library(SDMTools)
   # library(sp)
   # library(gstat)
   # library(plotKML)
@@ -20,7 +19,36 @@ minosse.core<-Vectorize(function(dtset,
 
   if(is.null(projection.ground)) projection.ground<-mappa_ras else projection.ground<-projection.ground
 
-
+  auc_wrapped <- function(obs,pred){
+    #input checks
+    if (length(obs)!=length(pred)) stop('this requires the same number of observed & predicted values')
+    
+    
+    #deal with NAs
+    if (length(which(is.na(c(obs,pred))))>0) {
+      na = union(which(is.na(obs)),which(is.na(pred)))
+      warning(length(na),' data points removed due to missing data')
+      obs = obs[-na]; pred = pred[-na]
+    }
+    
+    #define the n's and do checks
+    n = length(obs); if (length(which(obs %in% c(0,1)))!=n) stop('observed values must be 0 or 1') #ensure observed are values 0 or 1
+    n1 = as.double(length(which(obs==1))); n0 = as.double(length(which(obs==0)))
+    if (n1==0 || n1==n) return( NaN ) #if all observed 1's or 0's return NaN
+    
+    ###calc AUC
+    pred0 = pred[which(obs==0)]
+    pred1 = pred[which(obs==1)]
+    ranks = rank(pred,ties.method='average')#define ranks
+    ranks0 = ranks[which(obs==0)]
+    ranks1 = ranks[which(obs==1)]
+    U = n0*n1 + (n0*(n0+1))/2 - sum(ranks0) #calc U stat
+    AUC = U/(n0*n1) #estimate AUC
+    if (AUC<.5) AUC = 1-AUC
+    
+    #return the auc value
+    return(AUC)
+  }
 
 
   kriging_prediction<-function(x,mappa_ras,projection.ground,seed,configs){
@@ -58,7 +86,7 @@ minosse.core<-Vectorize(function(dtset,
         kr_MINOSSE<-raster(pred@predicted[,"value"])
         raster::crs(kr_MINOSSE)<-raster::crs(projection.ground)
         which(!is.na(extract(kr_MINOSSE,x[[2]])))->valid_points
-        if(class(try(kr_auc<-SDMTools::auc(x[[2]][valid_points,]$value,extract(kr_MINOSSE,x[[2]][valid_points,]))))=="try-error") kr_auc<-NA else kr_auc<-kr_auc
+        if(class(try(kr_auc<-auc_wrapped(x[[2]][valid_points,]$value,extract(kr_MINOSSE,x[[2]][valid_points,]))))=="try-error") kr_auc<-NA else kr_auc<-kr_auc
         RK_RMSE<-summary(pred)$RMSE
         RK_tvar<-summary(pred)$tvar
         MLA_mod<-mod

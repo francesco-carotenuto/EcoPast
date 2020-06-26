@@ -16,7 +16,7 @@
 #' @return A plot showing the occurrence probability (on the left) and the threshold-based geographic range (on the right) maps of target species along with its fossil localities.
 #' @author Francesco Carotenuto, francesco.carotenuto@unina.it
 #' @examples
-#'   \donttest{
+#'   \dontrun{
 #'
 #'   library(raster)
 #'   data(lgm)

@@ -22,7 +22,7 @@
 #' @return A list of two rasters to be used in the \code{\link{minosse.data}} function: the first is the prediction domain to be used in the \code{prediction.ground} argument, and the second is a paleodem to be used in the \code{abiotic.covs} argument.
 #' @author Francesco Carotenuto, francesco.carotenuto@unina.it
 #' @examples
-#'   \donttest{
+#'   \dontrun{
 #'   mapofpast(Ma=540,domain="land",ext=c(-50,50,-30,30),projection="laea",pts=NULL)
 #'   }
 
