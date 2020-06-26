@@ -10,7 +10,7 @@
 #' @return The target species geographic range as a SpatialPolygonsDataFrame object.
 #' @author Francesco Carotenuto, francesco.carotenuto@unina.it
 #' @examples
-#'   \dontrun
+#'   \dontrun{
 #'   library(raster)
 #'   data(lgm)
 #'   raster(system.file("exdata/prediction_ground.gri", package="EcoPast"))->prediction_ground
