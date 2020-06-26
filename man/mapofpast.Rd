@@ -33,7 +33,7 @@ as the extent's centre either if set in the \code{ext} argument either if set by
 is specified, then the mean centre of the fossil record distribution is used as projection centre.
 }
 \examples{
-  \donttest{
+  \dontrun{
   mapofpast(Ma=540,domain="land",ext=c(-50,50,-30,30),projection="laea",pts=NULL)
   }
 }

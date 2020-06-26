@@ -27,7 +27,7 @@ This function provides two maps: one with a species occurrence probability and a
 When running this function for the first time in your workspace it is necessary to firstly load \code{ggplo2}.
 }
 \examples{
-  \donttest{
+  \dontrun{
 
   library(raster)
   data(lgm)

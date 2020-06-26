@@ -79,7 +79,7 @@ target species fossil sites and cannot be changed. The user is allowed to set a 
 sites exciding this value are ruled out from any analysis. See the reference paper and related Supporting Information for further details.
 }
 \examples{
-  \donttest{
+  \dontrun{
 library(raster)
 data(lgm)
 raster(system.file("exdata/prediction_ground.gri", package="EcoPast"))->prediction_ground

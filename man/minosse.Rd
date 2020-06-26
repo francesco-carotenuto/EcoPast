@@ -61,7 +61,7 @@ If \code{minosse} function is performed for multiple species all at once, then \
 This function performs \code{\link{minosse.data}} and \code{\link{minosse.target}} all at once for one or multiple target species.
 }
 \examples{
-  \donttest{
+  \dontrun{
   library(raster)
   data(lgm)
   raster(system.file("exdata/prediction_ground.gri", package="EcoPast"))->prediction_ground

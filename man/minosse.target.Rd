@@ -40,7 +40,7 @@ For Machine Learning Algorithms Barbet & Masin (https://doi.org/10.1111/j.2041-2
 (with less than 1000 presences), they suggest performing multiple (10 at least) pseudo absences simulations and then averaging the derived predictions. \code{minosse.target} function allows fully complying with these authors' suggestions.
 }
 \examples{
-  \donttest{
+  \dontrun{
   library(raster)
   data(lgm)
   raster(system.file("exdata/prediction_ground.gri", package="EcoPast"))->prediction_ground
