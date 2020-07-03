@@ -106,32 +106,32 @@ minosse.data<-function(obj,
                        n.clusters=NULL,
                        seed=NULL) {
 
- # library(fossil)
- # library(cooccur)
- # library(sp)
- # library(raster)
- # library(maptools)
- # library(intamap)
- # library(plotKML)
- # library(parallel)
- # library(parallelDist)
- # library(rworldmap)
- # library(maptools)
- # library(raster)
- # library(automap)
- # library(dismo)
- # library(foreach)
- # library(doSNOW)
- # library(doParallel)
- # library(parallel)
- # library(usdm)
- # library(R.utils)
- # library(rgeos)
- # library(smoothr)
- # library(lava)
- # library(spatstat)
- # library(fields)
- # library(rangeBuilder)
+#  library(fossil)
+#  library(cooccur)
+#  library(sp)
+#  library(raster)
+#  library(maptools)
+#  library(intamap)
+#  library(plotKML)
+#  library(parallel)
+#  library(parallelDist)
+#  library(rworldmap)
+#  library(maptools)
+#  library(raster)
+#  library(automap)
+#  library(dismo)
+#  library(foreach)
+#  library(doSNOW)
+#  library(doParallel)
+#  library(parallel)
+#  library(usdm)
+#  library(R.utils)
+#  library(rgeos)
+#  library(smoothr)
+#  library(lava)
+#  library(spatstat)
+#  library(fields)
+#  library(rangeBuilder)
 
   if (!requireNamespace("rangeBuilder", quietly = TRUE)) {
     stop("Package \"rangeBuilder\" needed for this function to work. Please install it.",
@@ -140,6 +140,11 @@ minosse.data<-function(obj,
 
   length(getLoadedDLLs())
   Sys.getenv("R_MAX_NUM_DLLs", unset = NA)
+  
+  if(isTRUE(constrain.predictors)) {
+    if(is.null(temporal.tolerance)) stop("Enabling the predictors constraint requires setting a temporal tolerance")
+  }
+    
   if(is.null(prediction.ground)){
   if(is.null(projection)) stop("Spatial interpolation needs projected coordinates. Please provide a CRS object or set either  'laea' (for Lambert Azimuthal Equal Area projection) or 'moll' (for Mollweide projection)")
   if(all(projection!=c("laea","moll"))) my.prj<-sp::CRS(projection)
@@ -284,10 +289,15 @@ minosse.data<-function(obj,
     lat_0->lat_0
   }
 
-  if(!is.null(prediction.ground)) {
-    temp_obj<-obj
-    obj<-spTransform(obj,CRSobj=raster::crs(prediction.ground))
-    obj<-obj[as(prediction.ground,"SpatialPixels"),]
+  if (!is.null(prediction.ground)) {
+    temp_obj <- obj
+    obj <- sp::spTransform(obj, CRSobj = raster::crs(prediction.ground))
+    if(class(prediction.ground)%in%c("SpatialPolygonsDataFrame","SpatialPolygons"))
+      obj <- obj[prediction.ground,]
+    if(class(prediction.ground)=="RasterLayer") {
+      obj <- obj[as(prediction.ground,"SpatialPixels"),]
+    }
+    
   }
   if(is.null(prediction.ground)) {
     temp_obj<-obj
@@ -313,7 +323,7 @@ minosse.data<-function(obj,
   } else c.size<-c.size
 
   if(c.size=="semimean") {
-    vect2rast(obj[-zerodist(obj)[,2],],"loc_id")->temp_res;
+    vect2rast(obj[-zerodist(obj)[,2],],fname="age")->temp_res;
     summary(temp_res)$grid$cellsize[[1]]->c.size
   }
 
@@ -375,59 +385,81 @@ minosse.data<-function(obj,
     raster::values(ra)<-1
     new_ra<-mask(ra,rast)
   }
-  if(!is.null(prediction.ground)) {
-    max.range<-function(w_pol,c.size,crop.by.mcp=crop.by.mcp){
-      vect2rast(w_pol,cell.size=c.size)->temp_w_rast
-      if(isTRUE(crop.by.mcp)) {
-        sp::spTransform(temp_obj,CRSobj=raster::crs(temp_w_rast))->prj_obj
-        rgeos::gConvexHull(prj_obj)->conv_pol
-        raster::mask(temp_w_rast,conv_pol)->temp_w_rast
+  if (!is.null(prediction.ground)) {
+    max.range <- function(w_pol, c.size, crop.by.mcp = crop.by.mcp) {
+      temp_w_rast <- plotKML::vect2rast(w_pol, cell.size = c.size)
+      if (isTRUE(crop.by.mcp)) {
+        prj_obj <- sp::spTransform(temp_obj, CRSobj = raster::crs(temp_w_rast))
+        conv_pol <- rgeos::gConvexHull(prj_obj)
+        temp_w_rast <- raster::mask(temp_w_rast, conv_pol)
       }
-      if(projection=="laea") raster::crs(temp_w_rast)<-laea_prj else if(projection=="moll") raster::crs(temp_w_rast)<-moll_prj
-      temp_w_rast<-as(temp_w_rast,"SpatialPixels")
-      land<-temp_w_rast[w_pol]
+      if (projection == "laea") 
+        raster::crs(temp_w_rast) <- laea_prj
+      else if (projection == "moll") 
+        raster::crs(temp_w_rast) <- moll_prj
+      temp_w_rast <- as(temp_w_rast, "SpatialPixels")
+      land <- temp_w_rast[w_pol]
       return(land)
     }
-
-    if(class(prediction.ground)=="SpatialPolygonsDataFrame") {
-      max.range(prediction.ground,c.size,crop.by.mcp)->rast
-    }
-    if(class(prediction.ground)=="RasterLayer") {
-      if(c.size=="raster") {
-        prediction.ground->rast
-        if(isTRUE(crop.by.mcp)) {
-          sp::spTransform(temp_obj,CRSobj=raster::crs(rast))->prj_obj
-          rgeos::gConvexHull(prj_obj)->conv_pol
-          raster::mask(rast,conv_pol)->rast
-          if(!is.null(abiotic.covs)) raster::mask(abiotic.covs,conv_pol)->abiotic.covs
-        }
-        as(rast,"SpatialPixels")->rast
+    if (class(prediction.ground)%in%c("SpatialPolygonsDataFrame","SpatialPolygons")) {
+      rast <- plotKML::vect2rast(prediction.ground, cell.size = c.size)
+      rast<-raster(rast)
+      if (isTRUE(crop.by.mcp)) {
+        prj_obj <- sp::spTransform(temp_obj, CRSobj = raster::crs(rast))
+        conv_pol <- rgeos::gConvexHull(prj_obj)
+        rast <- raster::mask(rast, conv_pol)
+        if (!is.null(abiotic.covs)) 
+          abiotic.covs <- raster::mask(abiotic.covs, 
+                                       conv_pol)
       }
-      if(is.numeric(c.size)) {
-        gr_ext<-extent(prediction.ground)
-        x_gr<-seq(from=gr_ext[1],to=gr_ext[2],by=c.size)
-        y_gr<-seq(from=gr_ext[3],to=gr_ext[4],by=c.size)
-        expand.grid(x_gr,y_gr)->target_ras
-        sp::coordinates(target_ras)<-~Var1+Var2
-        raster::crs(target_ras)<-raster::crs(prediction.ground)
-        sp::gridded(target_ras)<-TRUE
-        raster(target_ras)->target_ras
-        prediction.ground<-raster::resample(prediction.ground,target_ras,method="ngb")
-        if(!is.null(abiotic.covs)) abiotic.covs<-raster::resample(abiotic.covs,target_ras)
-        prediction.ground->rast
-        if(isTRUE(crop.by.mcp)) {
-          sp::spTransform(temp_obj,CRSobj=raster::crs(rast))->prj_obj
-          rgeos::gConvexHull(prj_obj)->conv_pol
-          raster::mask(rast,conv_pol)->rast
-          if(!is.null(abiotic.covs)) raster::mask(abiotic.covs,conv_pol)->abiotic.covs
+      rast <- as(rast, "SpatialPixels")
+    }
+    if (class(prediction.ground) == "RasterLayer") {
+      if (c.size == "raster") {
+        rast <- prediction.ground
+        if (isTRUE(crop.by.mcp)) {
+          prj_obj <- sp::spTransform(temp_obj, CRSobj = raster::crs(rast))
+          conv_pol <- rgeos::gConvexHull(prj_obj)
+          rast <- raster::mask(rast, conv_pol)
+          if (!is.null(abiotic.covs)) 
+            abiotic.covs <- raster::mask(abiotic.covs, 
+                                         conv_pol)
         }
-        as(rast,"SpatialPixels")->rast
+        rast <- as(rast, "SpatialPixels")
+      }
+      if (is.numeric(c.size)) {
+        gr_ext <- extent(prediction.ground)
+        x_gr <- seq(from = gr_ext[1], to = gr_ext[2], 
+                    by = c.size)
+        y_gr <- seq(from = gr_ext[3], to = gr_ext[4], 
+                    by = c.size)
+        target_ras <- expand.grid(x_gr, y_gr)
+        sp::coordinates(target_ras) <- ~Var1 + Var2
+        raster::crs(target_ras) <- raster::crs(prediction.ground)
+        sp::gridded(target_ras) <- TRUE
+        target_ras <- raster(target_ras)
+        prediction.ground <- raster::resample(prediction.ground, 
+                                              target_ras, method = "ngb")
+        if (!is.null(abiotic.covs)) 
+          abiotic.covs <- raster::resample(abiotic.covs, 
+                                           target_ras)
+        rast <- prediction.ground
+        if (isTRUE(crop.by.mcp)) {
+          prj_obj <- sp::spTransform(temp_obj, CRSobj = raster::crs(rast))
+          conv_pol <- rgeos::gConvexHull(prj_obj)
+          rast <- raster::mask(rast, conv_pol)
+          if (!is.null(abiotic.covs)) 
+            abiotic.covs <- raster::mask(abiotic.covs, 
+                                         conv_pol)
+        }
+        rast <- as(rast, "SpatialPixels")
       }
     }
-    rast->ra
-    ra<-raster(ra)
-    raster::values(ra)<-1
-    new_ra<-mask(ra,rast)
+    ra <- rast
+    ra <- raster(ra)
+    raster::values(ra) <- 1
+    new_ra <- mask(ra, rast)
+    new_ra<-raster::crop(new_ra,extent(rasterToPolygons(new_ra)))
   }
 
   x.min<-obj@bbox[1,1]

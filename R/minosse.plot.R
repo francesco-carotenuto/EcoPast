@@ -11,6 +11,7 @@
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom grDevices colorRampPalette
 #' @importFrom ggspatial layer_spatial StatSpatialRasterDf GeomSpatialRaster StatSpatialRasterAnnotation StatSpatialRaster
+#' @importFrom grid textGrob gpar
 #' @export
 #' @details When running this function for the first time in your workspace it is necessary to firstly load \code{ggplo2}.
 #' @return A plot showing the occurrence probability (on the left) and the threshold-based geographic range (on the right) maps of target species along with its fossil localities.
@@ -88,5 +89,6 @@ if(length(which((.packages())=="ggplot2"))==0) stop("Please load ggplot2 package
                  legend.key.width=unit(0.2,"cm"),
                  axis.text=element_text(size=6))+
     spatial_mask
-  if(is.null(title))  gridExtra::grid.arrange(prob_plot,bin_plot, layout_matrix=matrix(c(1,2), 1, 2, byrow=TRUE), top=minosse_res$nam) else gridExtra::grid.arrange(prob_plot,bin_plot, layout_matrix=matrix(c(1,2), 1, 2, byrow=TRUE), top=title)
+  title1=textGrob(minosse_res$nam, gp=gpar(fontface="italic"))
+  if(is.null(title))  gridExtra::grid.arrange(prob_plot,bin_plot, layout_matrix=matrix(c(1,2), 1, 2, byrow=TRUE), top=title1) else gridExtra::grid.arrange(prob_plot,bin_plot, layout_matrix=matrix(c(1,2), 1, 2, byrow=TRUE), top=title)
   }
