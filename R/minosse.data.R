@@ -8,14 +8,14 @@
 #' @param obj A \eqn{n x m} dataframe where \eqn{n} are the single occurrences and \eqn{m} are the following columns: spec (the species name), x and y (longitude and latitude in decimal degrees, respectively) and loc_id (an id identifying the fossil locality).
 #' @param species_name Character. The name of the species whose geographic range is to be estimated.
 #' @param domain Character or \code{NULL}. Only used if no prediction ground is provided. If set as \code{"land"}, then present day mainland portions are selected according to fossil data spatial distribution, if \code{"sea"}, marine domain portion is used as prediction ground. Default \code{NULL}.
-#' @param time.overlap Numeric. The proportion of temporal intersection between the targer and the predictors' time span. Default is 0.95.
+#' @param time.overlap Numeric. The proportion of temporal intersection between the target and the predictors' time span. Default is 0.95.
 #' @param coc.by Character. Either \code{"locality"} or \code{"cell"} to enable cooccurence analysis. See details below.
 #' @param min.occs Either numeric or numeric vector of length 2. The number occurrences below which to discard a species from being either valid predictors either a target. If ony one value is provided, the threshold is the same for both target and predicors.
 #' @param abiotic.covs the raster or rasters' stack of additional environmental predictors.
 #' @param combine.covs Logical. Should \code{\link{minosse.data}} collate species and abiotic predictors when performing variables' number reduction? Default \code{TRUE} See details.
 #' @param reduce_covs_by Character. The method used for predictors' number reduction. Available strategies are \code{"pca"}, \code{"variance"} or \code{"corr"}. See details.
 #' @param covs_th Numeric. The threshold value used for predictors' number reduction strategy. See details.
-#' @param c.size Numeric. When \code{prediction.ground} is \code{NULL} this is the (square) cell resolution in meters for spatial interpolations. Ignored if \code{prediction.ground} is a raster.
+#' @param c.size Numeric.This is the (square) cell resolution in meters for spatial interpolations. Some character values are possible: "mean", "semimean" and "max" (see details for forther explanations). If \code{prediction.ground} is not null and is a raster it is possible to use the raster resolution by setting "raster" as c.size.
 #' @param bkg.predictors The number of pseudo absences to be simulated for each predictor species. If \code{"presence"}, the pseudo absences number equals the presences in each species.
 #' @param min.bkg Numeric. If \code{bkg.predictors} is set to \code{"presence"}, this is the minimum number of pseudo absences to simulate if a species occurrence number is below this value.
 #' @param sampling.by.distance Logical. \code{TRUE} for a distace-based density pseudo absences simulation. \code{FALSE} for a pure spatial random distribution of pseudo absences.
@@ -54,10 +54,11 @@
 #' @details In \code{minosse.data} there are different strategies for predictor species (covariates) dimension reduction. The first one considers only the species that are significantly related (positively or negatively) to the target species, then discarding all the others.
 #' This first stratery uses the cooccurrence analysis that can be performed either at the locality level, i.e. by seeking pattern of cooccurrence whithin the species list of any single fossil locality, or at the cell level, i.e. by considering lists of
 #' unique species occurring inside the squared cell of the prediction ground. A cell based analysis is useful when having many low-richness fossil localities. If the significantly relationships is less than 4, then all the species are considered.  Other
-#' strategies can be used for predictors' dimensionality reduction. These additional strategies are performed over the predictors'maps and can employ one of the following methods: Principal Component Analysis (\code{"pca"}), Variance  Inflation Factor (\code{"vif"}) and correlation (\code{"corr"}).
+#' strategies can be used for predictors' dimensionality reduction. These additional strategies are performed over the predictors'maps and can employ one of the following methods: Principal Component Analysis (\code{"pca"}), Variance  Inflation Factor (\code{"variance"}) and correlation (\code{"corr"}).
 #' These strategies need a threshold value (\code{"covs_th"}) to be set in order to select the predictors to retain. If the strategy is \code{"pca"}, then the \code{covs_th} is the percentage (from 1 to 100) of variance to be explained by PCA axes. If the strategy is \code{"corr"}, then \code{covs_th} is any
-#' number between 0 and 1 indicating the correlation between predictors below which predictor species can be retained. If the strategy is \code{"variance"}, then \code{covs_th} is any mumber higher than zero indicating the higher variance inflation that can be achieved by the predictor.
-#' See details of \code{vif} function in the usdm package for further explanations. If \code{abiotic.covs} is not \code{NULL}, the \code{combine.covs} argument indicates if performing predictors maps number reduction by including (\code{TRUE}) or excluding (\code{FALSE}) abiotic covariates. If \code{FALSE}, abiotic covariates
+#' number between 0 and 1 indicating the correlation between predictors below which predictor species can be retained. If the strategy is \code{"variance"}, then \code{covs_th} is any mumber higher than one indicating the higher variance inflation that can be achieved by the predictor.
+#' See details of \code{vif} function in the usdm package for further explanations. For \code{c.size} some automatic values are available: by setting "mean", the algorithm uses the mean nearest neighbour distance between fossil localities as cell resolution; by setting "semimean" it uses half of the average nearest neighbour distance, whereas, by setting "max" it uses the maximum nearest neighbour distance.
+#' If \code{abiotic.covs} is not \code{NULL}, the \code{combine.covs} argument indicates if performing predictors maps number reduction by including (\code{TRUE}) or excluding (\code{FALSE}) abiotic covariates. If \code{FALSE}, abiotic covariates
 #' are always included in the final dataset of predictors. Spatial interpolations always need equal area coordinates reference system to be used. The user can specify its own projected CRS (in the proj4 format, see https://proj4.org/operations/projections/index.html) or can use predefined choices like \code{"laea"} (for Lambert Azimuthal equal area) or \code{"moll"} (for Mollweide) projections. When setting predefined projections,
 #' the user can specify the projection centre's coordinates in decimal degrees by \code{lon_0} and \code{lat_0} arguments. If both \code{lon_0} and \code{lat_0} are \code{NULL}, the mean longitude and latitude of the whole fossil record are used. Warning: If not \code{NULL}, the \code{prediction.ground}'s coordinates reference system has the priority over all the other projection settings.
 #' time.overlap indicates the percentage of target and predictors species temporal overalp. Each predictor temporally overlapping target species' time span is automatically ruled out from prediction.
@@ -106,32 +107,32 @@ minosse.data<-function(obj,
                        n.clusters=NULL,
                        seed=NULL) {
 
-#  library(fossil)
-#  library(cooccur)
-#  library(sp)
-#  library(raster)
-#  library(maptools)
-#  library(intamap)
-#  library(plotKML)
-#  library(parallel)
-#  library(parallelDist)
-#  library(rworldmap)
-#  library(maptools)
-#  library(raster)
-#  library(automap)
-#  library(dismo)
-#  library(foreach)
-#  library(doSNOW)
-#  library(doParallel)
-#  library(parallel)
-#  library(usdm)
-#  library(R.utils)
-#  library(rgeos)
-#  library(smoothr)
-#  library(lava)
-#  library(spatstat)
-#  library(fields)
-#  library(rangeBuilder)
+  # library(fossil)
+  # library(cooccur)
+  # library(sp)
+  # library(raster)
+  # library(maptools)
+  # library(intamap)
+  # library(plotKML)
+  # library(parallel)
+  # library(parallelDist)
+  # library(rworldmap)
+  # library(maptools)
+  # library(raster)
+  # library(automap)
+  # library(dismo)
+  # library(foreach)
+  # library(doSNOW)
+  # library(doParallel)
+  # library(parallel)
+  # library(usdm)
+  # library(R.utils)
+  # library(rgeos)
+  # library(smoothr)
+  # library(lava)
+  # library(spatstat)
+  # library(fields)
+  # library(rangeBuilder)
 
   if (!requireNamespace("rangeBuilder", quietly = TRUE)) {
     stop("Package \"rangeBuilder\" needed for this function to work. Please install it.",
@@ -140,11 +141,11 @@ minosse.data<-function(obj,
 
   length(getLoadedDLLs())
   Sys.getenv("R_MAX_NUM_DLLs", unset = NA)
-  
+
   if(isTRUE(constrain.predictors)) {
     if(is.null(temporal.tolerance)) stop("Enabling the predictors constraint requires setting a temporal tolerance")
   }
-    
+
   if(is.null(prediction.ground)){
   if(is.null(projection)) stop("Spatial interpolation needs projected coordinates. Please provide a CRS object or set either  'laea' (for Lambert Azimuthal Equal Area projection) or 'moll' (for Mollweide projection)")
   if(all(projection!=c("laea","moll"))) my.prj<-sp::CRS(projection)
@@ -297,7 +298,7 @@ minosse.data<-function(obj,
     if(class(prediction.ground)=="RasterLayer") {
       obj <- obj[as(prediction.ground,"SpatialPixels"),]
     }
-    
+
   }
   if(is.null(prediction.ground)) {
     temp_obj<-obj
@@ -393,9 +394,9 @@ minosse.data<-function(obj,
         conv_pol <- rgeos::gConvexHull(prj_obj)
         temp_w_rast <- raster::mask(temp_w_rast, conv_pol)
       }
-      if (projection == "laea") 
+      if (projection == "laea")
         raster::crs(temp_w_rast) <- laea_prj
-      else if (projection == "moll") 
+      else if (projection == "moll")
         raster::crs(temp_w_rast) <- moll_prj
       temp_w_rast <- as(temp_w_rast, "SpatialPixels")
       land <- temp_w_rast[w_pol]
@@ -408,8 +409,8 @@ minosse.data<-function(obj,
         prj_obj <- sp::spTransform(temp_obj, CRSobj = raster::crs(rast))
         conv_pol <- rgeos::gConvexHull(prj_obj)
         rast <- raster::mask(rast, conv_pol)
-        if (!is.null(abiotic.covs)) 
-          abiotic.covs <- raster::mask(abiotic.covs, 
+        if (!is.null(abiotic.covs))
+          abiotic.covs <- raster::mask(abiotic.covs,
                                        conv_pol)
       }
       rast <- as(rast, "SpatialPixels")
@@ -421,35 +422,35 @@ minosse.data<-function(obj,
           prj_obj <- sp::spTransform(temp_obj, CRSobj = raster::crs(rast))
           conv_pol <- rgeos::gConvexHull(prj_obj)
           rast <- raster::mask(rast, conv_pol)
-          if (!is.null(abiotic.covs)) 
-            abiotic.covs <- raster::mask(abiotic.covs, 
+          if (!is.null(abiotic.covs))
+            abiotic.covs <- raster::mask(abiotic.covs,
                                          conv_pol)
         }
         rast <- as(rast, "SpatialPixels")
       }
       if (is.numeric(c.size)) {
         gr_ext <- extent(prediction.ground)
-        x_gr <- seq(from = gr_ext[1], to = gr_ext[2], 
+        x_gr <- seq(from = gr_ext[1], to = gr_ext[2],
                     by = c.size)
-        y_gr <- seq(from = gr_ext[3], to = gr_ext[4], 
+        y_gr <- seq(from = gr_ext[3], to = gr_ext[4],
                     by = c.size)
         target_ras <- expand.grid(x_gr, y_gr)
         sp::coordinates(target_ras) <- ~Var1 + Var2
         raster::crs(target_ras) <- raster::crs(prediction.ground)
         sp::gridded(target_ras) <- TRUE
         target_ras <- raster(target_ras)
-        prediction.ground <- raster::resample(prediction.ground, 
+        prediction.ground <- raster::resample(prediction.ground,
                                               target_ras, method = "ngb")
-        if (!is.null(abiotic.covs)) 
-          abiotic.covs <- raster::resample(abiotic.covs, 
+        if (!is.null(abiotic.covs))
+          abiotic.covs <- raster::resample(abiotic.covs,
                                            target_ras)
         rast <- prediction.ground
         if (isTRUE(crop.by.mcp)) {
           prj_obj <- sp::spTransform(temp_obj, CRSobj = raster::crs(rast))
           conv_pol <- rgeos::gConvexHull(prj_obj)
           rast <- raster::mask(rast, conv_pol)
-          if (!is.null(abiotic.covs)) 
-            abiotic.covs <- raster::mask(abiotic.covs, 
+          if (!is.null(abiotic.covs))
+            abiotic.covs <- raster::mask(abiotic.covs,
                                          conv_pol)
         }
         rast <- as(rast, "SpatialPixels")

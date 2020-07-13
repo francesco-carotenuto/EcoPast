@@ -59,14 +59,14 @@ minosse.target<-function(resp,
                          seed=NULL){
 
 
-  #  library(GSIF)
-  #  library(raster)
-  #  library(dismo)
-  #  library(parallel)
-  #  library(doSNOW)
-  #  library(doParallel)
-  #  library(foreach)
-  #  library(PresenceAbsence)
+    # library(GSIF)
+    # library(raster)
+    # library(dismo)
+    # library(parallel)
+    # library(doSNOW)
+    # library(doParallel)
+    # library(foreach)
+    # library(PresenceAbsence)
 
 
   length(getLoadedDLLs())
@@ -331,14 +331,14 @@ minosse.target<-function(resp,
       RK_tvar<-MINOSSE_list[[1]]$kriging$RK_tvar;
       xgb_R2<-mean(MINOSSE_list[[1]]$kriging$xgb_R2);
       xgb_RMSE<-mean(MINOSSE_list[[1]]$kriging$xgb_RMSE);
-      full_model_stats<-list(RK_RMSE=RK_RMSE,RK_tvar=RK_tvar,xgb_R2=xgb_R2,xgb_RMSE=xgb_RMSE)
+      full_model_stats<-list(RK_AUC=auc_values,RK_RMSE=RK_RMSE,RK_tvar=RK_tvar,xgb_R2=xgb_R2,xgb_RMSE=xgb_RMSE)
     }
     if(n.folds>1){
       RK_RMSE<-MINOSSE_list[[1]][[n.folds+1]]$kriging$RK_RMSE;
       RK_tvar<-MINOSSE_list[[1]][[n.folds+1]]$kriging$RK_tvar;
       xgb_R2<-mean(MINOSSE_list[[1]][[n.folds+1]]$kriging$xgb_R2);
       xgb_RMSE<-mean(MINOSSE_list[[1]][[n.folds+1]]$kriging$xgb_RMSE);
-      full_model_stats<-list(RK_RMSE=RK_RMSE,RK_tvar=RK_tvar,xgb_R2=xgb_R2,xgb_RMSE=xgb_RMSE)
+      full_model_stats<-list(RK_AUC=auc_values,RK_RMSE=RK_RMSE,RK_tvar=RK_tvar,xgb_R2=xgb_R2,xgb_RMSE=xgb_RMSE)
     }
   }
 
@@ -349,7 +349,7 @@ minosse.target<-function(resp,
         RK_tvar<-x$kriging$RK_tvar;
         xgb_R2<-mean(x$kriging$xgb_R2,na.rm=TRUE);
         xgb_RMSE<-mean(x$kriging$xgb_RMSE,na.rm=TRUE);
-        return(full_model_stats<-data.frame(RK_RMSE=RK_RMSE,RK_tvar=RK_tvar,xgb_R2=xgb_R2,xgb_RMSE=xgb_RMSE))
+        return(full_model_stats<-data.frame(RK_AUC=mean(unlist(auc_values),na.rm=TRUE),RK_RMSE=RK_RMSE,RK_tvar=RK_tvar,xgb_R2=xgb_R2,xgb_RMSE=xgb_RMSE))
       })->full_model_stats
       do.call(rbind,full_model_stats)->full_model_stats
       full_model_stats<-as.list(apply(full_model_stats,2,function(x)mean(x,na.rm=TRUE)))
@@ -360,7 +360,7 @@ minosse.target<-function(resp,
         RK_tvar<-x[[length(x)]]$kriging$RK_tvar;
         xgb_R2<-mean(x[[length(x)]]$kriging$xgb_R2,na.rm=TRUE);
         xgb_RMSE<-mean(x[[length(x)]]$kriging$xgb_RMSE,na.rm=TRUE);
-        return(full_model_stats<-data.frame(RK_RMSE=RK_RMSE,RK_tvar=RK_tvar,xgb_R2=xgb_R2,xgb_RMSE=xgb_RMSE))
+        return(full_model_stats<-data.frame(RK_AUC=auc_values,RK_RMSE=RK_RMSE,RK_tvar=RK_tvar,xgb_R2=xgb_R2,xgb_RMSE=xgb_RMSE))
       })->full_model_stats
       do.call(rbind,full_model_stats)->full_model_stats
       full_model_stats<-as.list(apply(full_model_stats,2,function(x)mean(x,na.rm=TRUE)))
@@ -372,6 +372,6 @@ minosse.target<-function(resp,
   bin_maps<-lapply(total_th[,2],function(x)MINOSSE>=x)
   names(bin_maps)<-total_th$Method
   print("Prediction done")
-  return(list(bin_maps=bin_maps,prob_map=MINOSSE,MINOSSE_STATS=MINOSSE_list,thresholds=total_th,predictors=mappa_ras,validation=list(RK_RMSE=full_model_stats$RK_RMSE,RK_tvar=full_model_stats$RK_tvar,xgb_R2=full_model_stats$xgb_R2,xgb_RMSE=full_model_stats$xgb_RMSE),nam=unique(resp$spec),pts=resp))
+  return(list(bin_maps=bin_maps,prob_map=MINOSSE,MINOSSE_STATS=MINOSSE_list,thresholds=total_th,predictors=mappa_ras,validation=list(RK_AUC=full_model_stats$RK_AUC,RK_RMSE=full_model_stats$RK_RMSE,RK_tvar=full_model_stats$RK_tvar,xgb_R2=full_model_stats$xgb_R2,xgb_RMSE=full_model_stats$xgb_RMSE),nam=unique(resp$spec),pts=resp))
 }
 
