@@ -17,7 +17,7 @@ temporal.tolerance=NULL,projection=NULL,lon_0=NULL,lat_0=NULL,n.clusters=NULL,se
 
 \item{domain}{Character or \code{NULL}. Only used if no prediction ground is provided. If set as \code{"land"}, then present day mainland portions are selected according to fossil data spatial distribution, if \code{"sea"}, marine domain portion is used as prediction ground. Default \code{NULL}.}
 
-\item{time.overlap}{Numeric. The proportion of temporal intersection between the targer and the predictors' time span. Default is 0.95.}
+\item{time.overlap}{Numeric. The proportion of temporal intersection between the target and the predictors' time span. Default is 0.95.}
 
 \item{coc.by}{Character. Either \code{"locality"} or \code{"cell"} to enable cooccurence analysis. See details below.}
 
@@ -31,7 +31,7 @@ temporal.tolerance=NULL,projection=NULL,lon_0=NULL,lat_0=NULL,n.clusters=NULL,se
 
 \item{covs_th}{Numeric. The threshold value used for predictors' number reduction strategy. See details.}
 
-\item{c.size}{Numeric. When \code{prediction.ground} is \code{NULL} this is the (square) cell resolution in meters for spatial interpolations. Ignored if \code{prediction.ground} is a raster.}
+\item{c.size}{Numeric.This is the (square) cell resolution in meters for spatial interpolations. Some character values are possible: "mean", "semimean" and "max" (see details for forther explanations). If \code{prediction.ground} is not null and is a raster it is possible to use the raster resolution by setting "raster" as c.size.}
 
 \item{bkg.predictors}{The number of pseudo absences to be simulated for each predictor species. If \code{"presence"}, the pseudo absences number equals the presences in each species.}
 
@@ -67,10 +67,11 @@ This function creates both the response variable and the predictor variables to 
 In \code{minosse.data} there are different strategies for predictor species (covariates) dimension reduction. The first one considers only the species that are significantly related (positively or negatively) to the target species, then discarding all the others.
 This first stratery uses the cooccurrence analysis that can be performed either at the locality level, i.e. by seeking pattern of cooccurrence whithin the species list of any single fossil locality, or at the cell level, i.e. by considering lists of
 unique species occurring inside the squared cell of the prediction ground. A cell based analysis is useful when having many low-richness fossil localities. If the significantly relationships is less than 4, then all the species are considered.  Other
-strategies can be used for predictors' dimensionality reduction. These additional strategies are performed over the predictors'maps and can employ one of the following methods: Principal Component Analysis (\code{"pca"}), Variance  Inflation Factor (\code{"vif"}) and correlation (\code{"corr"}).
+strategies can be used for predictors' dimensionality reduction. These additional strategies are performed over the predictors'maps and can employ one of the following methods: Principal Component Analysis (\code{"pca"}), Variance  Inflation Factor (\code{"variance"}) and correlation (\code{"corr"}).
 These strategies need a threshold value (\code{"covs_th"}) to be set in order to select the predictors to retain. If the strategy is \code{"pca"}, then the \code{covs_th} is the percentage (from 1 to 100) of variance to be explained by PCA axes. If the strategy is \code{"corr"}, then \code{covs_th} is any
-number between 0 and 1 indicating the correlation between predictors below which predictor species can be retained. If the strategy is \code{"variance"}, then \code{covs_th} is any mumber higher than zero indicating the higher variance inflation that can be achieved by the predictor.
-See details of \code{vif} function in the usdm package for further explanations. If \code{abiotic.covs} is not \code{NULL}, the \code{combine.covs} argument indicates if performing predictors maps number reduction by including (\code{TRUE}) or excluding (\code{FALSE}) abiotic covariates. If \code{FALSE}, abiotic covariates
+number between 0 and 1 indicating the correlation between predictors below which predictor species can be retained. If the strategy is \code{"variance"}, then \code{covs_th} is any mumber higher than one indicating the higher variance inflation that can be achieved by the predictor.
+See details of \code{vif} function in the usdm package for further explanations. For \code{c.size} some automatic values are available: by setting "mean", the algorithm uses the mean nearest neighbour distance between fossil localities as cell resolution; by setting "semimean" it uses half of the average nearest neighbour distance, whereas, by setting "max" it uses the maximum nearest neighbour distance.
+If \code{abiotic.covs} is not \code{NULL}, the \code{combine.covs} argument indicates if performing predictors maps number reduction by including (\code{TRUE}) or excluding (\code{FALSE}) abiotic covariates. If \code{FALSE}, abiotic covariates
 are always included in the final dataset of predictors. Spatial interpolations always need equal area coordinates reference system to be used. The user can specify its own projected CRS (in the proj4 format, see https://proj4.org/operations/projections/index.html) or can use predefined choices like \code{"laea"} (for Lambert Azimuthal equal area) or \code{"moll"} (for Mollweide) projections. When setting predefined projections,
 the user can specify the projection centre's coordinates in decimal degrees by \code{lon_0} and \code{lat_0} arguments. If both \code{lon_0} and \code{lat_0} are \code{NULL}, the mean longitude and latitude of the whole fossil record are used. Warning: If not \code{NULL}, the \code{prediction.ground}'s coordinates reference system has the priority over all the other projection settings.
 time.overlap indicates the percentage of target and predictors species temporal overalp. Each predictor temporally overlapping target species' time span is automatically ruled out from prediction.
