@@ -17,4 +17,4 @@ Imports:
     rpart,xgboost,ggspatial,proto,tibble,sf,tcltk2,leaflet,graphics, smoothr,
     lava,spatstat,fields,ncdf4,Metrics
 Suggests: chronosphere,rangeBuilder
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
