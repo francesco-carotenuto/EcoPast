@@ -3,7 +3,7 @@
 #' @usage minosse(dat,species.name=NULL,domain=NULL,time.overlap=0.95,
 #' coc_by="locality",min.occs=10,min.bkg=100,sampling.by.distance=TRUE,
 #' n.sims=10,n.clusters=NULL,n.sims.clusters=NULL,prediction.ground=NULL,
-#' abiotic.covs=NULL,combine.covs=FALSE,crop.by.mcp=FALSE,constrain.predictors=FALSE,
+#' abiotic.covs=NULL,combine.covs=FALSE,reduce_covs_by="pca",covs_th=0.95,crop.by.mcp=FALSE,constrain.predictors=FALSE,
 #' temporal.tolerance=NULL,projection=NULL,lon_0=NULL,lat_0=NULL,seed=NULL)
 #' @param dat A \eqn{n x m} dataframe where \eqn{n} are the single occurrences and \eqn{m} are the following columns: spec (the species name), x and y (longitude and latitude in decimal degrees, respectively) and loc_id (an id identifying the fossil locality).
 #' @param species.name The character vector of the species names whose geographic ranges are to be estimated. If \code{NULL}, \code{minosse} runs for all the species in the fossil dataset.
@@ -49,7 +49,7 @@
 minosse<-function(dat,
                   species.name=NULL,
                   domain=NULL,
-                  time.overlap=0.95,
+                  time.overlap=time.overlap,
                   coc_by="locality",
                   min.occs=10,
                   min.bkg=100,
@@ -60,6 +60,8 @@ minosse<-function(dat,
                   prediction.ground=NULL,
                   abiotic.covs=NULL,
                   combine.covs=FALSE,
+                  reduce_covs_by="pca",
+                  covs_th=0.95,
                   crop.by.mcp=FALSE,
                   constrain.predictors=FALSE,
                   temporal.tolerance=NULL,
