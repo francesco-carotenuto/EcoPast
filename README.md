@@ -13,7 +13,7 @@ time fossil record
 ## Installation
 
 EcoPast (GPL-2) relies on some functions provided by other packages.
-For installation instruction, please go to the wiki page https://github.com/francesco-carotenuto/EcoPast/wiki
+For installation instruction, please go to the wiki page: https://github.com/francesco-carotenuto/EcoPast/wiki/Tutorial:-from-the-installation-to-a-case-study
 
 ## Important Note
 
@@ -23,5 +23,5 @@ use.
 
 ## Running MInOSSE
 
-Please go to the wiki pages to learn more about package installation, data preparation and some examples about running MInOSSE
+Please go to the wiki pages to learn more about package installation, data preparation and some examples about running MInOSSE:
 https://github.com/francesco-carotenuto/EcoPast/wiki
