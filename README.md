@@ -13,6 +13,7 @@ time fossil record
 ## Installation
 
 EcoPast (GPL-2) relies on some functions provided by other packages.
+For installation instruction, please go to the wiki page https://github.com/francesco-carotenuto/EcoPast/wiki
 
 ## Important Note
 
