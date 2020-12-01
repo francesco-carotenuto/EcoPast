@@ -25,3 +25,5 @@ use.
 
 Please go to the wiki pages to learn more about package installation, data preparation and some examples about running MInOSSE:
 https://github.com/francesco-carotenuto/EcoPast/wiki
+
+## Please report any issue or bug at francesco.carotenuto@unina.it
