@@ -15,6 +15,6 @@ Imports:
     rgeos,GSIF,pbapply,PresenceAbsence,gstat,RColorBrewer,lattice,
     gridExtra,ggplot2,caret,nlme,nortest,quantregForest,randomForest,ranger,
     rpart,xgboost,ggspatial,proto,tibble,sf,tcltk2,leaflet,graphics, smoothr,
-    lava,spatstat,fields,ncdf4,Metrics
+    lava,spatstat,fields,ncdf4,Metrics,latticeExtra,rasterVis
 Suggests: chronosphere,rangeBuilder
 RoxygenNote: 7.1.1
