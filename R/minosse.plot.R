@@ -72,14 +72,14 @@ minosse.plot<-function(minosse_res,th_num=3,pcex=1.5,cont_pol=NULL,title=NULL){
                          main="Probability map",xlab="Longitude (meters)", ylab="Latitude (meters)")
     bin_plot<-rasterVis::levelplot(binmap,par.settings = my.theme.bin,at=my.at,margin=FALSE,
                         main="Geographic range",xlab = "Longitude (meters)", ylab= "Latitude (meters)")+
-      layer(sp::sp.points(occs,pch=20,col="lightskyblue1",cex=pcex))
+             layer(sp.points(occs, pch=20, cex=pcex, col="lightskyblue1"))
     } else {
     prob_plot<-rasterVis::levelplot(prob,par.settings = my.theme.prob,at=my.at,margin=FALSE,
                          main="Probability map",xlab="Longitude (meters)", ylab="Latitude (meters)")+
       spatial_mask
     bin_plot<-rasterVis::levelplot(binmap,par.settings = my.theme.bin,at=my.at,margin=FALSE,
                         main="Geographic range",xlab = "Longitude (meters)", ylab= "Latitude (meters)")+
-      layer(sp::sp.points(occs,pch=20,col="lightskyblue1",cex=pcex))+
+      layer(sp.points(occs, pch=20, cex=pcex, col="lightskyblue1"))+
       spatial_mask
     }
   
