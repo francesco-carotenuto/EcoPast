@@ -14,6 +14,8 @@
 #' @importFrom grid textGrob gpar
 #' @importFrom rasterVis levelplot
 #' @importFrom raster cellStats
+#' @importClassesFrom sp SpatialPoints SpatialPointsDataFrame
+#' @importClassesFrom raster Raster RasterLayer
 #' @export
 #' @details When running this function for the first time in your workspace it is necessary to firstly load \code{ggplo2}.
 #' @return A plot showing the occurrence probability (on the left) and the threshold-based geographic range (on the right) maps of target species along with its fossil localities.
