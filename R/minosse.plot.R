@@ -13,6 +13,7 @@
 #' @importFrom grid textGrob gpar
 #' @importFrom rasterVis levelplot
 #' @importFrom raster cellStats
+#' @importFrom ggplot2 layer
 #' @importClassesFrom sp SpatialPoints SpatialPointsDataFrame
 #' @importClassesFrom raster Raster RasterLayer
 #' @export
