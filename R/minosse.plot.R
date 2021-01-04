@@ -82,6 +82,7 @@ minosse.plot<-function(minosse_res,th_num=3,pcex=1.5,cont_pol=NULL,title=NULL){
     }
   
   
-  title1=grid::textGrob(minosse_res$nam, gp=gpar(fontface="italic"))
-  if(is.null(title))  gridExtra::grid.arrange(prob_plot,bin_plot, layout_matrix=matrix(c(1,2), 1, 2, byrow=TRUE), top=title1) else gridExtra::grid.arrange(prob_plot,bin_plot, layout_matrix=matrix(c(1,2), 1, 2, byrow=TRUE), top=title) 
-  }
+  title1=grid::textGrob(minosse_res$nam, gp=grid::gpar(fontface="italic"))
+  #if(is.null(title))  gridExtra::grid.arrange(prob_plot,bin_plot, layout_matrix=matrix(c(1,2), 1, 2, byrow=TRUE), top=title1) else gridExtra::grid.arrange(prob_plot,bin_plot, layout_matrix=matrix(c(1,2), 1, 2, byrow=TRUE), top=title) 
+bin_plot  
+}
