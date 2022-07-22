@@ -1,0 +1,26 @@
+[general]
+creator=R package 'raster'
+created=2019-03-15 16:53:29
+[georeference]
+nrows=119
+ncols=127
+xmin=-6699107.00269746
+ymin=-5854502.97216778
+xmax=6000892.99730254
+ymax=6045497.02783222
+projection=+proj=laea +lat_0=45 +lon_0=85 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs
+[data]
+datatype=FLT4S
+byteorder=little
+nbands=1
+bandorder=BIL
+categorical=FALSE
+minvalue=-334.848968505859
+maxvalue=302.028350830078
+nodatavalue=-3.4e+38
+[legend]
+legendtype=
+values=
+color=
+[description]
+layername=prediction_ground
