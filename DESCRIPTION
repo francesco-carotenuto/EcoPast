@@ -10,9 +10,9 @@ Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.5.0)
 Imports: 
-    fossil,cooccur,sp,raster,maptools,intamap,plotKML,parallelDist,rworldmap,
+    fossil,cooccur,sp,raster,maptools,AICcmodavg,intamap,plotKML,parallelDist,rworldmap,
     automap,dismo,foreach,doSNOW,doParallel,parallel,usdm, R.utils, methods,
-    rgeos,GSIF,pbapply,PresenceAbsence,gstat,RColorBrewer,lattice,
+    rgeos,pbapply,PresenceAbsence,gstat,RColorBrewer,lattice,
     gridExtra,ggplot2,caret,nlme,nortest,quantregForest,randomForest,ranger,
     rpart,xgboost,ggspatial,proto,tibble,sf,tcltk2,leaflet,graphics, smoothr,
     lava,spatstat,fields,ncdf4,Metrics,latticeExtra,rasterVis
