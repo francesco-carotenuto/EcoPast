@@ -81,7 +81,7 @@ minosse.plot<-function(minosse_res,th_num=3,pcex=1.5,cont_pol=NULL,title=NULL){
     prob_plot<-rasterVis::levelplot(prob,par.settings = my.theme.prob,at=my.at,margin=FALSE,
                          main="Probability map",xlab="Longitude (meters)", ylab="Latitude (meters)")+
       spatial_mask
-    bin_plot<-rasterVis::levelplot(binmap,par.settings = my.theme.bin,at=my.at,margin=FALSE,
+    bin_plot<-rasterVis::levelplot(binmap,par.settings = my.theme.bin,margin=FALSE,
                         main="Geographic range",xlab = "Longitude (meters)", ylab= "Latitude (meters)")+
       latticeExtra::layer(panel.xyplot(x=occs[,1],y=occs[,2], pch=20, cex=pcex, col="lightskyblue1"),data=list(occs=occs,pcex=pcex))+
       spatial_mask
