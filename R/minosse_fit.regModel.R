@@ -174,7 +174,7 @@ minosse_fit.regModel<-function(configs,formulaString, rmatrix, predictionDomain,
             registerDoParallel(configs$kriging$tuning.clusters)
             ctrl <- caret::trainControl(method="repeatedcv", number=configs$kriging$folds,repeats=configs$kriging$repeats,allowParallel = TRUE)
             gb.tuneGrid <- expand.grid(nrounds=c(50,100), max_depth=2:3,eta=0.01, gamma=0, colsample_bytree=0.8, min_child_weight=1,subsample=0.5)
-            rgm <- caret::train(formulaString, data=rmatrix.s, method="xgbTree", objective = "binary:logistic", trControl=ctrl, tuneGrid=gb.tuneGrid,metric = "error")
+            rgm <- caret::train(formulaString, data=rmatrix.s, method="xgbTree", objective = "binary:logistic", trControl=ctrl, tuneGrid=gb.tuneGrid,metric = "error",verbosity = 0)
             closeAllConnections()
             gc()
           }
@@ -183,7 +183,7 @@ minosse_fit.regModel<-function(configs,formulaString, rmatrix, predictionDomain,
               cat("\n","Fitting a Gradient Boosting model using the 'xgboost' package")
               ctrl <- caret::trainControl(method="repeatedcv", number=configs$kriging$folds,repeats=configs$kriging$repeats,allowParallel = FALSE)
               gb.tuneGrid <- expand.grid(nrounds=c(50,100), max_depth=2:3,eta=0.01, gamma=0, colsample_bytree=0.8, min_child_weight=1,subsample=0.5)
-              rgm <- caret::train(formulaString, data=rmatrix.s, method="xgbTree", objective = "binary:logistic", trControl=ctrl, tuneGrid=gb.tuneGrid,metric = "error")
+              rgm <- caret::train(formulaString, data=rmatrix.s, method="xgbTree", objective = "binary:logistic", trControl=ctrl, tuneGrid=gb.tuneGrid,metric = "error",verbosity = 0)
 
             } else {
               stop("Packages 'caret', 'xgboost' not available")
