@@ -5,7 +5,7 @@
 #' c.size="mean",bkg.predictors="presence",min.bkg=NULL,sampling.by.distance=TRUE,
 #' prediction.ground=NULL,crop.by.mcp=FALSE,constrain.predictors=FALSE,
 #' temporal.tolerance=NULL,projection=NULL,lon_0=NULL,lat_0=NULL,n.clusters=NULL,seed=NULL)
-#' @param obj A \eqn{n x m} dataframe where \eqn{n} are the single occurrences and \eqn{m} are the following columns: spec (the species name), x and y (longitude and latitude in decimal degrees, respectively) and loc_id (an id identifying the fossil locality).
+#' @param obj A \eqn{n x m} dataframe where \eqn{n} are the single occurrences and \eqn{m} are the following columns: spec (the species name), x and y (longitude and latitude in decimal degrees, respectively), loc_id (an id identifying the fossil locality) and age (the ege estimate of the fossil locality).
 #' @param species_name Character. The name of the species whose geographic range is to be estimated.
 #' @param domain Character or \code{NULL}. Only used if no prediction ground is provided. If set as \code{"land"}, then present day mainland portions are selected according to fossil data spatial distribution, if \code{"sea"}, marine domain portion is used as prediction ground. Default \code{NULL}.
 #' @param time.overlap Numeric. The proportion of temporal intersection between the target and the predictors' time span. Default is 0.95.
